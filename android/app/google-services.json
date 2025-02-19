@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "900298239988",
+    "project_id": "fgpt2-c51f1",
+    "storage_bucket": "fgpt2-c51f1.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:900298239988:android:70f4f2d22607c3af30d3a1",
+        "android_client_info": {
+          "package_name": "com.example.fgpt2"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA95UAVXjIb3sLNVRIwzPt8XSXWlNovaJY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
