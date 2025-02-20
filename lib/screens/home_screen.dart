@@ -55,7 +55,7 @@ class _HomeScreenState extends State<HomeScreen> {
         const SnackBar(content: Text('Account successfully deleted')),
       );
 
-      // 🔑 Redirect via AuthWrapper to handle login redirection
+      // Redirect via AuthWrapper to handle login redirection
       if (mounted) {
         Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (context) => const AuthWrapper()),
