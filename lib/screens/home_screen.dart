@@ -1,6 +1,7 @@
 // screens/home_screen.dart
 // ignore_for_file: use_build_context_synchronously, library_private_types_in_public_api
 
+import 'package:fgpt2/wrappers/auth_wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../widgets/account_deletion_dialog.dart';
@@ -24,10 +25,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _deleteAccount() async {
     final shouldDelete = await showDialog<bool>(
-      context: context,
-      builder: (context) => const AccountDeletionDialog(),
-    ) ?? false;
-    
+          context: context,
+          builder: (context) => const AccountDeletionDialog(),
+        ) ??
+        false;
+
     if (!shouldDelete) return;
 
     final password = await _promptForPassword();
@@ -38,30 +40,30 @@ class _HomeScreenState extends State<HomeScreen> {
     });
 
     try {
-      // Get current user
       final user = FirebaseAuth.instance.currentUser;
       if (user == null) throw Exception('No user is signed in');
 
-      // Get user credentials for reauthentication
       final credential = EmailAuthProvider.credential(
         email: user.email!,
         password: password,
       );
 
-      // Reauthenticate user
       await user.reauthenticateWithCredential(credential);
-
-      // Delete the user account
       await user.delete();
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Account successfully deleted')),
       );
 
-      // Navigation will be handled by AuthWrapper
+      // 🔑 Redirect via AuthWrapper to handle login redirection
+      if (mounted) {
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (context) => const AuthWrapper()),
+          (route) => false,
+        );
+      }
     } on FirebaseAuthException catch (e) {
       String errorMessage = 'Failed to delete account';
-      
       if (e.code == 'wrong-password') {
         errorMessage = 'Incorrect password. Please try again.';
       } else if (e.code == 'too-many-requests') {
@@ -69,7 +71,7 @@ class _HomeScreenState extends State<HomeScreen> {
       } else if (e.code == 'user-mismatch') {
         errorMessage = 'The credentials do not match the user account.';
       }
-      
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(errorMessage)),
       );
@@ -95,7 +97,8 @@ class _HomeScreenState extends State<HomeScreen> {
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text('Please enter your password to confirm account deletion:'),
+            const Text(
+                'Please enter your password to confirm account deletion:'),
             const SizedBox(height: 16),
             TextField(
               controller: _passwordController,
@@ -113,7 +116,8 @@ class _HomeScreenState extends State<HomeScreen> {
             child: const Text('CANCEL'),
           ),
           TextButton(
-            onPressed: () => Navigator.of(context).pop(_passwordController.text),
+            onPressed: () =>
+                Navigator.of(context).pop(_passwordController.text),
             style: TextButton.styleFrom(foregroundColor: Colors.red),
             child: const Text('CONFIRM'),
           ),
@@ -125,7 +129,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser;
-    
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Home'),
